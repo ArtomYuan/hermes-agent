@@ -1533,13 +1533,36 @@ def read_file_tool(path: str, offset: int = 1, limit: int = 2000, task_id: str =
         # ── Structured-document extraction ────────────────────────────
         # Try before the binary-extension guard so .docx/.xlsx can render as text.
         # Malformed documents fall through to the normal path/binary guard.
-        from tools.read_extract import ExtractionError, extract_document_text, is_extractable_document
+        from tools.read_extract import (
+            ANYDOC_EXTENSIONS,
+            EXTRACTABLE_EXTENSIONS,
+            ExtractionError,
+            extract_document_text,
+            is_extractable_document,
+        )
 
         if is_extractable_document(str(_resolved)):
             try:
                 extracted_text = extract_document_text(str(_resolved))
-            except ExtractionError:
+            except ExtractionError as exc:
                 logger.debug("document extraction failed for %s", path, exc_info=True)
+                # For binary document formats, surface the specific failure
+                # (size cap, encrypted, malformed…) instead of falling through
+                # — the fallthrough path can only produce a generic
+                # binary-file error or garbage raw bytes, hiding the
+                # actionable reason (e.g. "Document too large to convert").
+                # .ipynb stays on the fallthrough path: it is plain JSON text
+                # and a raw read is genuinely useful.
+                _doc_ext = _resolved.suffix.lower()
+                _binary_doc = _doc_ext in ANYDOC_EXTENSIONS or (
+                    _doc_ext in EXTRACTABLE_EXTENSIONS and _doc_ext != ".ipynb"
+                )
+                if _binary_doc and not str(exc).startswith("Unsupported document type"):
+                    return tool_error(
+                        f"Cannot read '{path}' ({_doc_ext}): document "
+                        f"extraction failed — {exc}. Use terminal utilities "
+                        "to inspect or convert the file."
+                    )
             else:
                 file_ops = _get_file_ops(task_id)
                 lines = extracted_text.splitlines()
