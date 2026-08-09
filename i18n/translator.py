@@ -42,20 +42,32 @@ class Translator:
             escaped = re.escape(pat_s).replace(r"\{\}", "(.+?)")
             self.templates.append((re.compile("^" + escaped + "$"), repl.strip()))
 
-    def translate(self, text: str) -> str:
+    def translate(self, text: str, _depth: int = 0) -> str:
         if not text:
             return text
         t = text.strip()
         # 1. 精确匹配
         if t in self.strings:
             return self.strings[t]
-        # 2. 模板正则（整句，占位符回填）
+        # 2. 模板正则（整句，占位符回填 + 捕获组递归翻译）
         for rx, repl in self.templates:
             m = rx.match(t)
             if m:
                 out = repl
                 for i, g in enumerate(m.groups(), 1):
-                    out = out.replace("{}", g, 1)
+                    # 捕获组递归翻译（动态段如 status_detail），防深循环
+                    g_raw = g.strip()
+                    g_inner = g_raw[1:-1] if g_raw.startswith("(") and g_raw.endswith(")") else g_raw
+                    if _depth < 3:
+                        # 逗号分段递归（status_detail 常为多段）
+                        g_t = "，".join(
+                            self.translate(p.strip(), _depth + 1) for p in g_inner.split(",") if p.strip()
+                        )
+                    else:
+                        g_t = g_inner
+                    if g_raw != g_inner:
+                        g_t = f"（{g_t}）"
+                    out = out.replace("{}", g_t, 1)
                 return out
         # 3. 前缀替换
         for k, v in self.prefixes:

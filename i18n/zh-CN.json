@@ -2127,6 +2127,14 @@
   "unknown fast mode: {}": "未知 fast 模式: {}",
   "unknown density value: {}": "未知 density 值: {}",
   "could not reach browser CDP at {}: {}": "无法连接 {} 处的浏览器 CDP: {}",
-  "could not reach browser CDP at {}": "无法连接 {} 处的浏览器 CDP"
+  "could not reach browser CDP at {}": "无法连接 {} 处的浏览器 CDP",
+  "⏩ Steered into current run{}. Your message arrives after the next tool call.": "⏩ 已汇入当前运行{}。您的消息将在下一次工具调用后送达。",
+  "↪ Redirected current run{}. I'll adjust using your correction.": "↪ 已重定向当前运行{}。我会根据您的纠正调整。",
+  "⏳ Subagent working{} — your message is queued for when it finishes (use /stop to cancel everything).": "⏳ 子代理工作中{} — 您的消息已排队，待其完成后处理（使用 /stop 取消全部）。",
+  "⏳ Compressing context{} — your message is queued for when it finishes (use /stop to cancel everything).": "⏳ 上下文压缩中{} — 您的消息已排队，待完成后处理（使用 /stop 取消全部）。",
+  "⏳ Queued for the next turn{}. I'll respond once the current task finishes.": "⏳ 已排队等待下一轮{}。当前任务完成后我会回复。",
+  "⚡ Interrupting current task{}. I'll respond to your message shortly.": "⚡ 正在中断当前任务{}。稍后我会回复您的消息。",
+  "{} min elapsed": "已过 {} 分钟",
+  "running: {}": "正在运行：{}"
  }
 }
