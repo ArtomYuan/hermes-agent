@@ -64,7 +64,7 @@ class Translator:
                         # 逗号分段递归（status_detail 常为多段），段首剥符号再尝试
                         g_t = "，".join(
                             self.translate(p.strip().lstrip("—–-:·| ").strip(), _depth + 1)
-                            for p in g_inner.split(",") if p.strip()
+                            for p in re.split(r",| · ", g_inner) if p.strip()
                         )
                     else:
                         g_t = g_inner
@@ -76,6 +76,13 @@ class Translator:
         for k, v in self.prefixes:
             if t.startswith(k):
                 return v + t[len(k):]
+        # 4. 顶层分段（' · ' 连接的多句组合——逐段翻译再拼接，防深循环）
+        if _depth < 3 and " · " in t:
+            parts = [p.strip() for p in t.split(" · ") if p.strip()]
+            if len(parts) > 1:
+                translated = " · ".join(self.translate(p, _depth + 1) for p in parts)
+                if translated != t:
+                    return translated
         return text
 
 

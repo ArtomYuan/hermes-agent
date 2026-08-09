@@ -3116,7 +3116,9 @@
   "file not found on gateway and no data_url provided": "网关中未找到该文件，且未提供 data_url",
   "queued prompt failed": "已排队的提示发送失败",
   "model switch failed": "模型切换失败",
-  "compute host turn failed": "计算主机回合执行失败"
+  "compute host turn failed": "计算主机回合执行失败",
+  "Memory updated.": "记忆已更新。",
+  "context compression in progress": "上下文压缩进行中"
  },
  "templates": {
   "{}\n\nThe user explicitly requested this review with the following focus — prioritize it over the general instructions above:\n{}": "{}\n\n用户明确要求（explicitly requested）进行本次审查，请优先于上述通用指令处理以下重点：\n{}",
@@ -4637,6 +4639,7 @@
   "[The user attached an image but analysis failed.]\n{}": "[用户附加了一张图片，但分析失败。]\n{}",
   "compute-host {} failed: {}": "计算主机 {} 失败：{}",
   "compute-host {} failed": "计算主机 {} 失败",
-  "live session sync failed: {}": "活动会话同步失败：{}"
+  "live session sync failed: {}": "活动会话同步失败：{}",
+  "Patched {} in skill '{}' ({} replacement).": "已修补 {} 于技能 '{}'（{} 处替换）。"
  }
 }
