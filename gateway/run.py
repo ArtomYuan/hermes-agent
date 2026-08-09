@@ -5238,6 +5238,8 @@ class TurnRunner:
                             allow_permanent=approval_data.get("allow_permanent", True),
                             allow_session=approval_data.get("allow_session", True),
                             smart_denied=approval_data.get("smart_denied", False),
+                            desc_cn=approval_data.get("desc_cn", ""),
+                            risk_cn=approval_data.get("risk_cn", ""),
                         ),
                         ctx._loop_for_step,
                         logger=logger,
