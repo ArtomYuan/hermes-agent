@@ -1106,6 +1106,7 @@ DEFAULT_CONFIG = {
     "display": {
         "compact": False,
         "personality": "",
+        "language": "zh",  # i18n: 输出语言（zh=中文默认，en=English）——网关消息/工具输出按此翻译
         "resume_display": "full",
         # Recap tuning for /resume and startup resume. The defaults match the
         # historical hardcoded values; expose them as config so power users can
