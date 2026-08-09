@@ -73,9 +73,9 @@ def _get_translator() -> Optional[Translator]:
         return None
 
 
-@lru_cache(maxsize=1)
 def _zh_enabled() -> bool:
-    """读取 display.language 开关（缺省 zh——fork 默认中文，setup/Dashboard 可切换）。"""
+    """读取 display.language 开关（缺省 zh——fork 默认中文，setup/Dashboard 可切换）。
+    不缓存：Dashboard/setup 修改后立即生效。"""
     try:
         import yaml
         cfg_path = os.path.join(os.environ.get("HERMES_HOME", os.path.expanduser("~/.hermes")), "config.yaml")

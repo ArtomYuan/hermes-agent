@@ -3046,6 +3046,15 @@ def run_setup_wizard(args):
             "│             ⚕ Hermes Agent Setup Wizard                │", Colors.MAGENTA
         )
     )
+    # 自定义补丁（i18n）：界面语言选择（setup 入口切换 en/zh）
+    _lang_choices = ["中文（默认）", "English"]
+    _lang_idx = prompt_choice(
+        "Interface language / 界面语言（网关消息与工具输出使用该语言）:",
+        _lang_choices,
+        default=0 if config.get("display", {}).get("language", "zh") == "zh" else 1,
+    )
+    config.setdefault("display", {})["language"] = "zh" if _lang_idx == 0 else "en"
+    print_success(f"Language set to {'中文' if _lang_idx == 0 else 'English'} / 语言已设置。")
     print(
         color(
             "├─────────────────────────────────────────────────────────┤",
