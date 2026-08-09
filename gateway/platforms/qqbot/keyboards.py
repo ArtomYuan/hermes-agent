@@ -202,10 +202,11 @@ def _make_callback_button(
 
 
 def build_approval_keyboard(session_key: str, *, allow_permanent: bool = True) -> InlineKeyboard:
-    """Build the approval keyboard, hiding persistent scope when unavailable.
+    """Build the approval keyboard with a fixed 4-button layout (Endfield style).
 
-    Layout: ``[✅ 允许一次] [⭐ 始终允许] [❌ 拒绝]`` — all three share
+    Layout: ``[⟡ 允许] [◈ 本轮] [⚙ 始终] [✕ 拒绝]`` — all four share
     ``group_id='approval'`` so clicking one greys out the rest.
+    4 按钮始终固定显示（终末地工业风格），不依赖 allow_permanent。
 
     :param session_key: Embedded into ``button_data`` so the decision
         routes back to the right pending approval.
@@ -221,18 +222,17 @@ def build_approval_keyboard(session_key: str, *, allow_permanent: bool = True) -
             data=f"{APPROVAL_BUTTON_PREFIX}{session_key}:allow-round",
             style=1, group_id="approval",
         ),
-    ]
-    if allow_permanent:
-        buttons.append(_make_callback_button(
+        _make_callback_button(
             btn_id="always", label="⚙ 始终", visited_label="已始终",
             data=f"{APPROVAL_BUTTON_PREFIX}{session_key}:allow-always",
             style=1, group_id="approval",
-        ))
-    buttons.append(_make_callback_button(
-        btn_id="deny", label="✕ 拒绝", visited_label="已拒绝",
-        data=f"{APPROVAL_BUTTON_PREFIX}{session_key}:deny",
-        style=0, group_id="approval",
-    ))
+        ),
+        _make_callback_button(
+            btn_id="deny", label="✕ 拒绝", visited_label="已拒绝",
+            data=f"{APPROVAL_BUTTON_PREFIX}{session_key}:deny",
+            style=0, group_id="approval",
+        ),
+    ]
     return InlineKeyboard(content=KeyboardContent(rows=[KeyboardRow(buttons=buttons)]))
 
 
