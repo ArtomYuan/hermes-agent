@@ -246,3 +246,16 @@ python -m pytest tests/ -q
 MIT — 详见 [LICENSE](LICENSE)。
 
 由 [Nous Research](https://nousresearch.com) 构建。
+
+## 更新记录
+
+版本号沿用上游；汉化层改动在此记录，上游功能见对应版本链接。
+
+### v2026.8.3（2026-08-09）——汉化层建立（当前）
+
+- i18n 双语输出层：上游英文原版 + 翻译层（translator + 4634 条映射表）——默认中文，setup/Dashboard 可切换
+- 切换入口：`hermes setup` 向导语言选择 + Dashboard 配置
+- 补漏机制：捕获组递归翻译 + 模板长度降序 + 顶层 ` · ` 分段（组合消息逐段翻译）
+- 历史：README 中文门面（纯 Markdown 版）；仓库说明标注完全汉化版
+
+同步上游 [v2026.8.3](https://github.com/NousResearch/hermes-agent/releases/tag/v2026.8.3)。
