@@ -313,6 +313,7 @@ def _build_exec_text(req: ApprovalRequest) -> str:
     if _desc:
         lines.append(f"操作：{_desc}")
     if _risk:
+        lines.append("")
         lines.append(f"安全评估：{_risk}")
     lines.append("")
     lines.append(f"⏱️ 超时: {req.timeout_sec} 秒")
