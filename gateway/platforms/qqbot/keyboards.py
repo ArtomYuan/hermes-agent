@@ -212,7 +212,7 @@ def build_approval_keyboard(session_key: str, *, allow_permanent: bool = True) -
     """
     buttons = [
         _make_callback_button(
-            btn_id="allow", label="✅ 允许一次", visited_label="已允许",
+            btn_id="allow", label="⟡ 允许", visited_label="已允许",
             data=f"{APPROVAL_BUTTON_PREFIX}{session_key}:allow-once",
             style=1, group_id="approval",
         ),
@@ -224,12 +224,12 @@ def build_approval_keyboard(session_key: str, *, allow_permanent: bool = True) -
     ]
     if allow_permanent:
         buttons.append(_make_callback_button(
-            btn_id="always", label="⭐ 始终允许", visited_label="已始终允许",
+            btn_id="always", label="⚙ 始终", visited_label="已始终",
             data=f"{APPROVAL_BUTTON_PREFIX}{session_key}:allow-always",
             style=1, group_id="approval",
         ))
     buttons.append(_make_callback_button(
-        btn_id="deny", label="❌ 拒绝", visited_label="已拒绝",
+        btn_id="deny", label="✕ 拒绝", visited_label="已拒绝",
         data=f"{APPROVAL_BUTTON_PREFIX}{session_key}:deny",
         style=0, group_id="approval",
     ))
