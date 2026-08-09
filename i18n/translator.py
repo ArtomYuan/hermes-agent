@@ -41,6 +41,8 @@ class Translator:
             pat_s = pat.strip()
             escaped = re.escape(pat_s).replace(r"\{\}", "(.+?)")
             self.templates.append((re.compile("^" + escaped + "$"), repl.strip()))
+        # 长模板优先（精确/完整句先于通用模板匹配，避免短模板抢先导致半翻译）
+        self.templates.sort(key=lambda t: -len(t[1]))
 
     def translate(self, text: str, _depth: int = 0) -> str:
         if not text:
@@ -59,9 +61,10 @@ class Translator:
                     g_raw = g.strip()
                     g_inner = g_raw[1:-1] if g_raw.startswith("(") and g_raw.endswith(")") else g_raw
                     if _depth < 3:
-                        # 逗号分段递归（status_detail 常为多段）
+                        # 逗号分段递归（status_detail 常为多段），段首剥符号再尝试
                         g_t = "，".join(
-                            self.translate(p.strip(), _depth + 1) for p in g_inner.split(",") if p.strip()
+                            self.translate(p.strip().lstrip("—–-:·| ").strip(), _depth + 1)
+                            for p in g_inner.split(",") if p.strip()
                         )
                     else:
                         g_t = g_inner

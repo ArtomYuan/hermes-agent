@@ -1377,7 +1377,17 @@
   "slash worker timed out": "slash worker 超时",
   "slash worker failed": "slash worker 失败",
   "handler error: ": "处理程序错误: ",
-  "agent init failed: ": "代理初始化失败: "
+  "agent init failed: ": "代理初始化失败: ",
+  "shutting down": "正在关闭",
+  "Your current task will be interrupted.": "您的当前任务将被中断。",
+  "receiving stream response": "正在接收流式响应",
+  "working": "工作中",
+  "Gateway": "网关",
+  "Restart the gateway to connect this platform.": "请重启网关以连接此平台。",
+  "terminal": "终端",
+  "browser": "浏览器",
+  "web_search": "网络搜索",
+  "delegate_task": "子代理任务"
  },
  "templates": {
   "{}\n\nThe user explicitly requested this review with the following focus — prioritize it over the general instructions above:\n{}": "{}\n\n用户明确要求（explicitly requested）进行本次审查，请优先于上述通用指令处理以下重点：\n{}",
@@ -2135,6 +2145,8 @@
   "⏳ Queued for the next turn{}. I'll respond once the current task finishes.": "⏳ 已排队等待下一轮{}。当前任务完成后我会回复。",
   "⚡ Interrupting current task{}. I'll respond to your message shortly.": "⚡ 正在中断当前任务{}。稍后我会回复您的消息。",
   "{} min elapsed": "已过 {} 分钟",
-  "running: {}": "正在运行：{}"
+  "running: {}": "正在运行：{}",
+  "⏳ Working — {} min — iteration {}/{}, {}": "⏳ 工作中 — {} 分钟 — 第 {}/{} 轮，{}",
+  "⏳ Working — {} min — iteration {}/{}": "⏳ 工作中 — {} 分钟 — 第 {}/{} 轮"
  }
 }
