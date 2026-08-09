@@ -3266,31 +3266,6 @@ def _run_approval_gate(
 
         if notify_cb is not None:
             from agent.redact import redact_sensitive_text
-            # 自定义补丁：LLM 生成中文操作说明与风险意见
-            _desc_cn = ""
-            _risk = ""
-            try:
-                from agent.auxiliary_client import call_llm as _call_llm
-                _resp = _call_llm(task="approval", messages=[{
-                    "role": "user",
-                    "content": f"格式：操作：{{中文说明命令意图}} | 风险：{{风险等级（低/中/高）+具体风险点}}\n```\n{command}\n```",
-                }], temperature=0, max_tokens=80)
-                if getattr(_resp, "choices", None):
-                    _summary = str(_resp.choices[0].message.content or "")
-                else:
-                    _summary = str(_resp or "")
-                if "|" in _summary:
-                    _parts = _summary.split("|")
-                else:
-                    _parts = _summary.replace("\n", "|").split("|")
-                for _p in _parts:
-                    if "操作：" in _p:
-                        _desc_cn = _p.split("操作：", 1)[1].strip()
-                    if "风险：" in _p:
-                        _risk = _p.split("风险：", 1)[1].strip()
-            except Exception:
-                _desc_cn = ""
-                _risk = ""
             approval_data = {
                 "command": redact_sensitive_text(display_target),
                 "pattern_key": pattern_key,
@@ -4038,6 +4013,33 @@ def check_all_command_guards(command: str, env_type: str,
             # persistence keys off pattern_key (not the command text), so the
             # allowlist is unaffected.
             from agent.redact import redact_sensitive_text
+            # 自定义补丁：LLM 生成中文操作说明与风险意见
+            # 自定义补丁：LLM 生成中文操作说明与风险意见
+            # 自定义补丁：LLM 生成中文操作说明与风险意见
+            _desc_cn = ""
+            _risk = ""
+            try:
+                from agent.auxiliary_client import call_llm as _call_llm
+                _resp = _call_llm(task="approval", messages=[{
+                    "role": "user",
+                    "content": f"格式：操作：{{中文说明命令意图}} | 风险：{{风险等级（低/中/高）+具体风险点}}\n```\n{command}\n```",
+                }], temperature=0, max_tokens=80)
+                if getattr(_resp, "choices", None):
+                    _summary = str(_resp.choices[0].message.content or "")
+                else:
+                    _summary = str(_resp or "")
+                if "|" in _summary:
+                    _parts = _summary.split("|")
+                else:
+                    _parts = _summary.replace("\n", "|").split("|")
+                for _p in _parts:
+                    if "操作：" in _p:
+                        _desc_cn = _p.split("操作：", 1)[1].strip()
+                    if "风险：" in _p:
+                        _risk = _p.split("风险：", 1)[1].strip()
+            except Exception:
+                _desc_cn = ""
+                _risk = ""
             approval_data = {
                 "command": redact_sensitive_text(command),
                 "pattern_key": primary_key,
