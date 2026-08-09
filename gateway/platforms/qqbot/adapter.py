@@ -2490,6 +2490,13 @@ class QQAdapter(BasePlatformAdapter):
         if not content or not content.strip():
             return SendResult(success=True)
 
+        # 自定义补丁（i18n）：输出层按语言翻译用户可见消息（英文原版保留，zh 模式翻译）
+        try:
+            from i18n.translator import translate as _i18n_translate
+            content = _i18n_translate(content)
+        except Exception:
+            pass
+
         formatted = self.format_message(content)
         chunks = self.truncate_message(formatted, self.MAX_MESSAGE_LENGTH)
 

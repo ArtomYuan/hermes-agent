@@ -1,0 +1,101 @@
+"""i18n 翻译层（fork 自定义，非上游）——输出层按语言翻译用户可见消息。
+
+机制：
+- 源码保留上游英文原版，翻译发生在消息发送出口（gateway send 层）。
+- 三级匹配：① 完整字符串精确匹配（strip 归一）② f-string 模板正则（{} → 捕获组回填）
+  ③ 短前缀替换（片段 key）。
+- 未命中的文本原样返回（英文保底），绝不破坏 markdown/代码块/占位符。
+- 语言开关：config.yaml → display.language: en | zh（缺省 en）。
+"""
+from __future__ import annotations
+
+import json
+import logging
+import os
+import re
+from functools import lru_cache
+from typing import Dict, List, Optional, Tuple
+
+logger = logging.getLogger(__name__)
+
+_TABLE_PATH = os.path.join(os.path.dirname(__file__), "zh-CN.json")
+
+
+class Translator:
+    """基于映射表的输出层翻译器。"""
+
+    def __init__(self, table_path: str = _TABLE_PATH):
+        with open(table_path, encoding="utf-8") as f:
+            data = json.load(f)
+        self.language = data.get("language", "zh-CN")
+        self.strings: Dict[str, str] = {}
+        for k, v in data.get("strings", {}).items():
+            self.strings[k.strip()] = v.strip()
+        # 前缀 key：短片段（6-30 字符）按长度降序
+        self.prefixes: List[Tuple[str, str]] = sorted(
+            ((k, v) for k, v in self.strings.items() if 6 <= len(k) <= 30),
+            key=lambda kv: -len(kv[0]),
+        )
+        self.templates: List[Tuple[re.Pattern, str]] = []
+        for pat, repl in data.get("templates", {}).items():
+            pat_s = pat.strip()
+            escaped = re.escape(pat_s).replace(r"\{\}", "(.+?)")
+            self.templates.append((re.compile("^" + escaped + "$"), repl.strip()))
+
+    def translate(self, text: str) -> str:
+        if not text:
+            return text
+        t = text.strip()
+        # 1. 精确匹配
+        if t in self.strings:
+            return self.strings[t]
+        # 2. 模板正则（整句，占位符回填）
+        for rx, repl in self.templates:
+            m = rx.match(t)
+            if m:
+                out = repl
+                for i, g in enumerate(m.groups(), 1):
+                    out = out.replace("{}", g, 1)
+                return out
+        # 3. 前缀替换
+        for k, v in self.prefixes:
+            if t.startswith(k):
+                return v + t[len(k):]
+        return text
+
+
+@lru_cache(maxsize=1)
+def _get_translator() -> Optional[Translator]:
+    try:
+        return Translator()
+    except Exception as e:
+        logger.warning("i18n: 翻译表加载失败，保持英文输出: %s", e)
+        return None
+
+
+@lru_cache(maxsize=1)
+def _zh_enabled() -> bool:
+    """读取 display.language 开关（缺省 zh——fork 默认中文，setup/Dashboard 可切换）。"""
+    try:
+        import yaml
+        cfg_path = os.path.join(os.environ.get("HERMES_HOME", os.path.expanduser("~/.hermes")), "config.yaml")
+        if os.path.exists(cfg_path):
+            cfg = yaml.safe_load(open(cfg_path, encoding="utf-8")) or {}
+            lang = (cfg.get("display") or {}).get("language", "zh")
+            return str(lang).lower() == "zh"
+    except Exception:
+        pass
+    return True
+
+
+def translate(text: str) -> str:
+    """对外入口：zh 模式翻译，en 模式原样。"""
+    if not _zh_enabled():
+        return text
+    tr = _get_translator()
+    if tr is None:
+        return text
+    try:
+        return tr.translate(text)
+    except Exception:
+        return text
