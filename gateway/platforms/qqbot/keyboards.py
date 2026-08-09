@@ -301,16 +301,19 @@ def build_approval_text(req: ApprovalRequest) -> str:
 
 
 def _build_exec_text(req: ApprovalRequest) -> str:
-    lines: List[str] = ["🔐 **命令执行审批**", ""]
+    # 自定义补丁（custom）：终末地工业风格 — 代码框 → 操作 → 安全评估
+    lines: List[str] = []
     if req.command_preview:
         preview = req.command_preview[:300]
         lines.append(f"```\n{preview}\n```")
     if req.cwd:
         lines.append(f"📁 目录: {req.cwd}")
-    if req.title and req.title != req.command_preview:
-        lines.append(f"📋 {req.title}")
-    if req.description:
-        lines.append(f"📝 {req.description}")
+    _desc = getattr(req, "desc_cn", "") or ""
+    _risk = getattr(req, "risk_cn", "") or ""
+    if _desc:
+        lines.append(f"操作：{_desc}")
+    if _risk:
+        lines.append(f"安全评估：{_risk}")
     lines.append("")
     lines.append(f"⏱️ 超时: {req.timeout_sec} 秒")
     return "\n".join(lines)
