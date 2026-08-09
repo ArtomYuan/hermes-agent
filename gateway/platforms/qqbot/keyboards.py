@@ -45,7 +45,7 @@ UPDATE_PROMPT_PREFIX = "update_prompt:"
 # session_key may itself contain colons (e.g. agent:main:qqbot:c2c:OPENID),
 # so the session_key group is greedy but trails the decision.
 _APPROVAL_DATA_RE = re.compile(
-    r"^approve:(.+):(allow-once|allow-always|deny)$"
+    r"^approve:(.+):(allow-once|allow-round|allow-always|deny)$"
 )
 
 # Pattern: update_prompt:y | update_prompt:n
@@ -283,6 +283,9 @@ class ApprovalRequest:
     severity: str = ""
     timeout_sec: int = 120
     allow_permanent: bool = True
+    allow_session: bool = True
+    desc_cn: str = ""
+    risk_cn: str = ""
 
 
 def build_approval_text(req: ApprovalRequest) -> str:

@@ -1097,6 +1097,7 @@ class QQAdapter(BasePlatformAdapter):
     # back to the ``/approve session`` text command.
     _APPROVAL_BUTTON_TO_CHOICE = {
         "allow-once": "once",
+        "allow-round": "round",
         "allow-always": "always",
         "deny": "deny",
     }
@@ -1129,7 +1130,7 @@ class QQAdapter(BasePlatformAdapter):
 
         chat_type = parsed.get("chat_type", "")
         chat_id = parsed.get("chat_id", "")
-        if chat_type == "c2c":
+        if chat_type in {"c2c", "dm"}:
             return bool(chat_id) and operator == chat_id
 
         if chat_type in {"group", "guild"}:
@@ -2740,6 +2741,8 @@ class QQAdapter(BasePlatformAdapter):
             command_preview=command,
             timeout_sec=self._APPROVAL_TIMEOUT_SECONDS,
             allow_permanent=allow_permanent and not smart_denied,
+            desc_cn=desc_cn,
+            risk_cn=risk_cn,
         )
         return await self.send_approval_request(
             chat_id, req, reply_to=msg_id,
