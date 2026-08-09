@@ -9,7 +9,7 @@
   <a href="https://discord.gg/NousResearch"><img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord"></a>
   <a href="https://github.com/NousResearch/hermes-agent/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License: MIT"></a>
   <a href="https://nousresearch.com"><img src="https://img.shields.io/badge/Built%20by-Nous%20Research-blueviolet?style=for-the-badge" alt="Built by Nous Research"></a>
-  <a href="README.md"><img src="https://img.shields.io/badge/Lang-English-lightgrey?style=for-the-badge" alt="English"></a>
+  <a href="README.en.md"><img src="https://img.shields.io/badge/Lang-English-lightgrey?style=for-the-badge" alt="English"></a>
   <a href="README.ur-pk.md"><img src="https://img.shields.io/badge/Lang-اردو-green?style=for-the-badge" alt="اردو"></a>
 </p>
 
@@ -44,6 +44,57 @@ curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
 > iex (irm https://hermes-agent.nousresearch.com/install.ps1)
 > ```
 > 安装完成后，可能需要重启终端，然后运行 `hermes` 开始对话。
+
+### Windows（原生，PowerShell）
+
+> **注意：** 原生 Windows 无需 WSL 即可运行 Hermes——CLI、网关、TUI 和工具全部原生工作。如果你想用 WSL2，上面的 Linux/macOS 一行命令同样适用。发现 Bug？请在 [issues](https://github.com/NousResearch/hermes-agent/issues) 提交。
+
+在 PowerShell 中运行：
+
+```powershell
+iex (irm https://hermes-agent.nousresearch.com/install.ps1)
+```
+
+安装程序会处理一切：uv、Python 3.11、Node.js、ripgrep、ffmpeg，**以及便携版 Git Bash**（MinGit，解压到 `%LOCALAPPDATA%\hermes\git`——无需管理员权限，与系统 Git 完全隔离）。Hermes 使用这个捆绑的 Git Bash 来执行 shell 命令。
+
+如果你已安装 Git，安装程序会检测并使用它。否则只需下载约 45MB 的 MinGit——不会触碰或干扰系统 Git。
+
+> **Android / Termux：** 已测试的手动安装路径请参考 [Termux 指南](https://hermes-agent.nousresearch.com/docs/getting-started/termux)。在 Termux 上，Hermes 会安装精选的 `.[termux]` 扩展，因为完整的 `.[all]` 扩展会拉取 Android 不兼容的语音依赖。
+>
+> **Windows：** 原生 Windows 完全受支持——上面的 PowerShell 一行命令即可安装全部内容。如果想用 WSL2，Linux 命令同样适用。原生 Windows 安装位于 `%LOCALAPPDATA%\hermes`；WSL2 安装位于 `~/.hermes`（与 Linux 相同）。
+
+### 故障排查
+
+#### Windows Defender 或杀毒软件将 `uv.exe` 标记为恶意软件
+
+如果杀毒软件（Bitdefender、Windows Defender 等）隔离了 Hermes `bin` 文件夹中的 `uv.exe`（`%LOCALAPPDATA%\hermes\bin\uv.exe`），这是**误报**。该文件是 Astral 的 `uv`——Hermes 捆绑的 Rust 版 Python 包管理器，用于管理其 Python 环境。基于 ML 的杀毒引擎经常标记下载和安装包的未签名 Rust 二进制文件。
+
+**验证副本真实性：**
+
+```powershell
+# 按需安装 GitHub CLI
+winget install --id GitHub.cli
+
+# 登录 GitHub
+gh auth login
+
+# 运行验证
+$uv = "$env:LOCALAPPDATA\hermes\bin\uv.exe"
+$ver = (& $uv --version).Split(' ')[1]
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+$zip = "$env:TEMP\uv.zip"
+Invoke-WebRequest "https://github.com/astral-sh/uv/releases/download/$ver/uv-x86_64-pc-windows-msvc.zip" -OutFile $zip -UseBasicParsing
+gh attestation verify $zip --repo astral-sh/uv
+Expand-Archive $zip "$env:TEMP\uv_x" -Force
+(Get-FileHash "$env:TEMP\uv_x\uv.exe").Hash -eq (Get-FileHash $uv).Hash
+```
+
+如果 attestation 显示 "Verification succeeded" 且最后一行输出 `True`，就没问题。
+
+**添加白名单：**
+- **Windows Defender：** 以管理员身份运行 PowerShell → `Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\hermes\bin"`
+- **Bitdefender：** 在 Bitdefender 控制台添加例外（Protection > Antivirus > Settings > Manage Exceptions）
+- 白名单**文件夹**，而不是文件哈希——Hermes 会更新 uv，哈希每个版本都会变
 
 安装后：
 
