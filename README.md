@@ -23,11 +23,6 @@
 git clone -b custom https://github.com/ArtomYuan/hermes-agent-custom.git
 ```
 
-## 备份策略
-
-- 本库 = 代码远程备份（无凭据/docs/skills——敏感数据在内网 unison）
-- push 前 gitleaks 自动扫描（pre-push hook）
-
 ## 更新记录
 
 每次改动在文末追加记录并更新版本号。
