@@ -1,8 +1,6 @@
-![Hermes Agent](assets/banner.png)
+![Hermes Agent](https://raw.githubusercontent.com/ArtomYuan/hermes-agent/main/assets/banner.png)
 
 # Hermes Agent ☤
-
-  [![Documentation](https://img.shields.io/badge/Docs-hermes--agent.nousresearch.com-FFD700?style=for-the-badge)](https://hermes-agent.nousresearch.com/docs/)   [![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/NousResearch)   [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](https://github.com/NousResearch/hermes-agent/blob/main/LICENSE)   [![Built by Nous Research](https://img.shields.io/badge/Built%20by-Nous%20Research-blueviolet?style=for-the-badge)](https://nousresearch.com)   [![English](https://img.shields.io/badge/Lang-English-lightgrey?style=for-the-badge)](README.en.md)   [![اردو](https://img.shields.io/badge/Lang-اردو-green?style=for-the-badge)](README.ur-pk.md) 
 
 **由 [Nous Research](https://nousresearch.com) 构建的自进化 AI 代理。** 它是唯一内置学习闭环的智能代理——从经验中创建技能，在使用中改进技能，主动持久化知识，搜索过往对话，并在跨会话中逐步构建对你的深度理解。可以在 $5 的 VPS 上运行，也可以在 GPU 集群上运行，或者使用几乎零成本的 Serverless 基础设施。它不绑定你的笔记本——你可以在 Telegram 上与它对话，而它在云端 VM 上工作。
 
@@ -17,7 +15,6 @@
 | **委派与并行** | 生成隔离子代理处理并行工作流。编写 Python 脚本通过 RPC 调用工具，将多步管道压缩为零上下文开销的轮次。 |
 | **随处运行** | 六种终端后端——本地、Docker、SSH、Daytona、Singularity 和 Modal。Daytona 和 Modal 提供 Serverless 持久化——代理环境空闲时休眠、按需唤醒，空闲期间几乎零成本。$5 VPS 或 GPU 集群都能跑。 |
 | **研究就绪** | 批量轨迹生成、轨迹压缩——用于训练下一代工具调用模型。 |
-
 
 ---
 
