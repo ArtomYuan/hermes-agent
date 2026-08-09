@@ -4047,11 +4047,9 @@ def check_all_command_guards(command: str, env_type: str,
                 "description": redact_sensitive_text(combined_desc),
                 "desc_cn": _desc_cn,
                 "risk_cn": _risk,
-                # Smart DENY overrides are one-operation decisions, so the UI
-                # must not offer a permanent scope.  Otherwise offer Always
-                # whenever any dangerous-pattern warning can actually be
-                # persisted (pure-tirith prompts stay session-max).
-                "allow_permanent": has_permanent_capable and not smart_denied_for_owner,
+                # 自定义补丁（custom）：smart 升级场景也显示「始终」——管理员点「始终」
+                # 即主动永久放行该 pattern（终末地 4 按钮风格，管理员做最终决定）
+                "allow_permanent": has_permanent_capable,
                 # Session approval is safe for every non-Smart-DENY prompt —
                 # including pure-tirith ones, where the persistence layer
                 # already caps scope at session. Adapters use this to render
@@ -4176,7 +4174,7 @@ def check_all_command_guards(command: str, env_type: str,
     choice = prompt_dangerous_approval(
         command,
         combined_desc,
-        allow_permanent=has_permanent_capable and not smart_denied_for_owner,
+        allow_permanent=has_permanent_capable,
         smart_denied=smart_denied_for_owner,
         approval_callback=approval_callback,
     )
