@@ -1,6 +1,6 @@
-# hermes-agent-custom（私有备份库）
+# hermes-agent-custom
 
-> 本库只保留 **custom 分支**——运行环境源码（汉化库 main + 功能补丁）。
+> 本库为 **custom 分支**——基于汉化库 main 的功能补丁分支。
 
 ## 汉化库说明
 
@@ -29,5 +29,5 @@ git clone -b custom https://github.com/ArtomYuan/hermes-agent-custom.git
 
 ### v2026.8.3（2026-08-09）——custom 分支建立（当前）
 
-- 私有库创建 + custom 分支备份（含全部功能补丁 + i18n 层）
+- 仓库创建 + custom 分支建立（含全部功能补丁 + i18n 层）
 - README 重构：汉化库 README 超链接 + custom 改动说明 + 更新记录
