@@ -8,12 +8,10 @@
 
 ## 自定义改动（与汉化版差异）
 
-- dm 审批修复（QQ 私聊按钮回调 chat_type 兼容）
 - 4 按钮终末地风格（允许/本轮/始终/拒绝）
 - smart escalate（LLM 判安全也升级管理员）
 - LLM 中文描述（desc_cn/risk_cn）
 - 审批弹窗排版（代码框→操作→安全评估）
-- i18n 汉化层（translator + zh-CN.json，与 main 同步）
 
 ## 部署
 
@@ -27,5 +25,5 @@ git clone -b custom https://github.com/ArtomYuan/hermes-agent-custom.git
 
 ### v2026.8.3（2026-08-09）——custom 分支建立（当前）
 
-- 仓库创建 + custom 分支建立（含全部自定义改动 + i18n 层）
+- 仓库创建 + custom 分支建立（含全部自定义改动）
 - README 重构：汉化库 README 超链接 + 自定义改动说明 + 更新记录
