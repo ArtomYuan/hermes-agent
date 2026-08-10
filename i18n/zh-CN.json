@@ -3118,7 +3118,9 @@
   "model switch failed": "模型切换失败",
   "compute host turn failed": "计算主机回合执行失败",
   "Memory updated.": "记忆已更新。",
-  "context compression in progress": "上下文压缩进行中"
+  "context compression in progress": "上下文压缩进行中",
+  "Memory updated": "记忆已更新",
+  "User profile updated": "用户档案已更新"
  },
  "templates": {
   "{}\n\nThe user explicitly requested this review with the following focus — prioritize it over the general instructions above:\n{}": "{}\n\n用户明确要求（explicitly requested）进行本次审查，请优先于上述通用指令处理以下重点：\n{}",

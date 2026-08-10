@@ -72,17 +72,24 @@ class Translator:
                         g_t = f"（{g_t}）"
                     out = out.replace("{}", g_t, 1)
                 return out
-        # 3. 前缀替换
-        for k, v in self.prefixes:
-            if t.startswith(k):
-                return v + t[len(k):]
-        # 4. 顶层分段（' · ' 连接的多句组合——逐段翻译再拼接，防深循环）
-        if _depth < 3 and " · " in t:
-            parts = [p.strip() for p in t.split(" · ") if p.strip()]
+        # 3. 顶层分段（' · ' 或 ', ' 连接的多句组合——逐段翻译再拼接，防深循环）
+        if _depth < 3 and (" · " in t or ", " in t):
+            parts = [p.strip() for p in re.split(r" · |, ", t) if p.strip()]
             if len(parts) > 1:
-                translated = " · ".join(self.translate(p, _depth + 1) for p in parts)
+                translated = "，".join(self.translate(p, _depth + 1) for p in parts)
+                translated = translated.replace("。，", "。").replace("！，", "！").replace("？，", "？")
                 if translated != t:
                     return translated
+        # 4. 前缀替换（尾部递归翻译——前缀+组合消息第二段也能翻）
+        for k, v in self.prefixes:
+            if t.startswith(k):
+                tail = t[len(k):]
+                sep = ""
+                m2 = re.match(r"^[，,·\s]+", tail)
+                if m2:
+                    sep = "，"
+                    tail = tail[m2.end():]
+                return v + sep + self.translate(tail, _depth + 1)
         return text
 
 
