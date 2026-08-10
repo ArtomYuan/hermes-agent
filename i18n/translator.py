@@ -85,7 +85,7 @@ class Translator:
             if t.startswith(k):
                 tail = t[len(k):]
                 sep = ""
-                m2 = re.match(r"^[，,·\s]+", tail)
+                m2 = re.match(r"^[，,·]+", tail)
                 if m2:
                     sep = "，"
                     tail = tail[m2.end():]
