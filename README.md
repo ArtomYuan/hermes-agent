@@ -18,12 +18,3 @@
 ```bash
 git clone -b custom https://github.com/ArtomYuan/hermes-agent-custom.git
 ```
-
-## 更新记录
-
-每次改动在文末追加记录并更新版本号。
-
-### v2026.8.3（2026-08-09）——custom 分支建立（当前）
-
-- 仓库创建 + custom 分支建立（含全部自定义改动）
-- README 重构：汉化库 README 超链接 + 自定义改动说明 + 更新记录
