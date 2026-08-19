@@ -6181,34 +6181,57 @@ class BasePlatformAdapter(ABC):
                                 record_obligation,
                             )
 
-                            if await asyncio.to_thread(ledger_enabled):
+                            if await asyncio.wait_for(
+                                asyncio.to_thread(ledger_enabled), timeout=2.0
+                            ):
                                 _obligation_id = compute_obligation_id(
                                     session_key,
                                     str(getattr(event, "message_id", "") or ""),
                                     text_content,
                                 )
-                                await asyncio.to_thread(
-                                    record_obligation,
-                                    obligation_id=_obligation_id,
-                                    session_key=session_key,
-                                    platform=str(
-                                        getattr(event.source.platform, "value",
-                                                event.source.platform)
+                                await asyncio.wait_for(
+                                    asyncio.to_thread(
+                                        record_obligation,
+                                        obligation_id=_obligation_id,
+                                        session_key=session_key,
+                                        platform=str(
+                                            getattr(event.source.platform, "value",
+                                                    event.source.platform)
+                                        ),
+                                        chat_id=event.source.chat_id,
+                                        thread_id=getattr(event.source, "thread_id", None),
+                                        content=text_content,
                                     ),
-                                    chat_id=event.source.chat_id,
-                                    thread_id=getattr(event.source, "thread_id", None),
-                                    content=text_content,
+                                    timeout=2.0,
                                 )
-                                await asyncio.to_thread(mark_attempting, _obligation_id)
+                                await asyncio.wait_for(
+                                    asyncio.to_thread(mark_attempting, _obligation_id),
+                                    timeout=2.0,
+                                )
                         except Exception:
                             logger.debug("delivery ledger record failed", exc_info=True)
                             _obligation_id = None
-                    result = await delivery_adapter._send_with_retry(
-                        chat_id=event.source.chat_id,
-                        content=text_content,
-                        reply_to=_reply_anchor,
-                        metadata=_final_thread_metadata,
-                    )
+                    try:
+                        result = await asyncio.wait_for(
+                            delivery_adapter._send_with_retry(
+                                chat_id=event.source.chat_id,
+                                content=text_content,
+                                reply_to=_reply_anchor,
+                                metadata=_final_thread_metadata,
+                            ),
+                            timeout=300.0,
+                        )
+                    except asyncio.TimeoutError:
+                        logger.error(
+                            "[%s] SEND TIMEOUT: response to %s timed out after 300s",
+                            delivery_adapter.name,
+                            event.source.chat_id,
+                        )
+                        result = SendResult(
+                            success=False,
+                            error="Send timed out after 300s",
+                            retryable=True,
+                        )
                     _record_delivery(result)
                     if _obligation_id is not None:
                         try:
